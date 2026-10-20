@@ -2,6 +2,7 @@ package com.leetjourney.user_service.service;
 
 import com.leetjourney.user_service.dto.UserDto;
 import com.leetjourney.user_service.entity.User;
+import com.leetjourney.user_service.exception.UserNotFoundException;
 import com.leetjourney.user_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class UserService {
     }
 
     public void updateUser(Long id, UserDto dto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: "+id));
 
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
@@ -62,7 +63,7 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: "+id));
         userRepository.delete(user);
     }
 }
