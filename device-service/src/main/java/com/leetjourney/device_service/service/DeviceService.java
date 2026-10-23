@@ -35,10 +35,10 @@ public class DeviceService {
 
     public DeviceDto updateDevice(Long id, DeviceDto deviceDto) {
         Device device = this.getDeviceById(id);
-        device.setName(deviceDto.getName());
-        device.setType(deviceDto.getType());
-        device.setLocation(deviceDto.getLocation());
-        device.setUserId(deviceDto.getUserId());
+        device.setName(deviceDto.name());
+        device.setType(deviceDto.type());
+        device.setLocation(deviceDto.location());
+        device.setUserId(deviceDto.userId());
 
         final Device updatedDevice = deviceRepository.save(device);
         return this.toDeviceDto(updatedDevice);
@@ -69,9 +69,9 @@ public class DeviceService {
 
     public Device toDevice(DeviceDto deviceDto){
         return Device.builder()
-                .name(deviceDto.getName())
-                .type(deviceDto.getType())
-                .userId(deviceDto.getUserId())
-                .location(deviceDto.getLocation()).build();
+                .name(deviceDto.name())
+                .type(deviceDto.type())
+                .userId(deviceDto.userId())
+                .location(deviceDto.location()).build();
     }
 }
