@@ -1,0 +1,7 @@
+CREATE TABLE alert
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT,
+    sent       BOOLEAN   NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

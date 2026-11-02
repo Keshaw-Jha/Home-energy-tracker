@@ -8,8 +8,8 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-#    volumes:
-#      - ./local_pgdata:/var/lib/postgresql/data
+  #    volumes:
+  #      - ./local_pgdata:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -123,3 +123,10 @@ services:
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-token
     volumes:
       - ./influxdb_data:/var/lib/influxdb2
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
