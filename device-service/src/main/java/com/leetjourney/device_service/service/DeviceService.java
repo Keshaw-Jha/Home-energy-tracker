@@ -15,63 +15,65 @@ public class DeviceService {
 
     private DeviceRepository deviceRepository;
 
-    public DeviceService(DeviceRepository deviceRepository){
+    public DeviceService(DeviceRepository deviceRepository) {
         this.deviceRepository = deviceRepository;
     }
 
-    public DeviceDto getDeviceDtoById(Long id) {
-        return toDeviceDto(getDeviceById(id));
+    public DeviceDto getDeviceById(Long id) {
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() ->
+                        new DeviceNotFoundException("Device not found with id " + id));
+        return mapToDto(device);
     }
 
-    public Device getDeviceById(Long id) {
-        return deviceRepository.findById(id)
-                .orElseThrow(()-> new DeviceNotFoundException("Device not found with id: "+id));
+    public DeviceDto createDevice(DeviceDto input) {
+        Device device = new Device();
+        device.setName(input.getName());
+        device.setType(input.getType());
+        device.setLocation(input.getLocation());
+        device.setUserId(input.getUserId());
+
+        final Device savedDevice = deviceRepository.save(device);
+        return mapToDto(savedDevice);
     }
 
-    public DeviceDto createDevice(DeviceDto deviceDto) {
-        Device newDevice = deviceRepository.save(toDevice(deviceDto));
-        return toDeviceDto(newDevice);
-    }
+    public DeviceDto updateDevice(Long id, DeviceDto input) {
+        Device existing = deviceRepository.findById(id)
+                .orElseThrow(() ->
+                        new DeviceNotFoundException("Device not found with id " + id));
 
-    public DeviceDto updateDevice(Long id, DeviceDto deviceDto) {
-        Device device = this.getDeviceById(id);
-        device.setName(deviceDto.name());
-        device.setType(deviceDto.type());
-        device.setLocation(deviceDto.location());
-        device.setUserId(deviceDto.userId());
+        existing.setName(input.getName());
+        existing.setType(input.getType());
+        existing.setLocation(input.getLocation());
+        existing.setUserId(input.getUserId());
 
-        final Device updatedDevice = deviceRepository.save(device);
-        return this.toDeviceDto(updatedDevice);
+        final Device updatedDevice = deviceRepository.save(existing);
+        return mapToDto(updatedDevice);
     }
 
     public void deleteDevice(Long id) {
-        if(!deviceRepository.existsById(id)){
-            throw new DeviceNotFoundException("Device not found with id: "+id);
+        if (!deviceRepository.existsById(id)) {
+            throw new DeviceNotFoundException("Device not found with id " + id);
         }
         deviceRepository.deleteById(id);
     }
 
     public List<DeviceDto> getAllDevicesByUserId(Long userId) {
-        return deviceRepository.findByUserId(userId)
-                .stream()
-                .map(this::toDeviceDto)
+        List<Device> devices = deviceRepository.findAllByUserId(userId);
+        return devices.stream()
+                .map(this::mapToDto)
                 .toList();
     }
 
-    public DeviceDto toDeviceDto(Device device){
-            return DeviceDto.builder()
-                    .id(device.getId())
-                    .name(device.getName())
-                    .type(device.getType())
-                    .userId(device.getUserId())
-                    .location(device.getLocation()).build();
+
+    private DeviceDto mapToDto(Device device) {
+        DeviceDto dto = new DeviceDto();
+        dto.setId(device.getId());
+        dto.setName(device.getName());
+        dto.setType(device.getType());
+        dto.setLocation(device.getLocation());
+        dto.setUserId(device.getUserId());
+        return dto;
     }
 
-    public Device toDevice(DeviceDto deviceDto){
-        return Device.builder()
-                .name(deviceDto.name())
-                .type(deviceDto.type())
-                .userId(deviceDto.userId())
-                .location(deviceDto.location()).build();
-    }
 }

@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-    List<Device> findByUserId(Long userId);
+
+    List<Device> findAllByUserId(Long userId);
+
 }
